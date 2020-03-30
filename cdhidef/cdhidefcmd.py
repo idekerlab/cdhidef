@@ -26,11 +26,12 @@ def _parse_arguments(desc, args):
     parser.add_argument('input',
                         help='Edge file in tab delimited format')
     parser.add_argument('--hidefcmd',
-                        default='/opt/conda/lib/python3.7/site-packages/hidef/finder.py',
-                        help='Path to hidef finder.py command')
+                        default='hidef_finder.py',
+                        help='Path to hidef_finder.py command')
     parser.add_argument('--tempdir', default='/tmp',
                         help='Directory needed to hold files temporarily for processing')
     return parser.parse_args(args)
+
 
 def create_tmpdir(theargs):
     """
@@ -59,18 +60,12 @@ def run_hidef_cmd(cmd):
 
 def run_hidef(theargs):
     """
-    :outdir: the output directory to comprehend the output link file
-    :param graph: input file
-    :param config_model: 'RB', 'RBER', 'CPM', 'Surprise', 'Significance'
-    :param overlap: bool, whether to enable overlapping community detection
-    :param directed
-    :param deep
-    :param interslice_weight
-    :param resolution_parameter
-    :return
+
+    :param theargs:
+    :return:
     """
     cmdargs = []
-    cmdargs.extend(['--g', theargs.input])
+    cmdargs.extend([theargs.hidefcmd, '--g', theargs.input])
     if theargs.input is None or not os.path.isfile(theargs.input):
         sys.stderr.write(str(theargs.input) + ' is not a file')
         return 3
@@ -81,7 +76,9 @@ def run_hidef(theargs):
 
     tmpdir = create_tmpdir(theargs)
     try:
-        cmdargs.extend(['-o', tmpdir])
+        outval = os.path.join(tmpdir, 'x')
+        cmdargs.extend(['--o', outval])
+        sys.stderr.write('tmpdir: ' + tmpdir + '\n')
         sys.stderr.write('Running ' + str(cmdargs) + '\n')
         sys.stderr.flush()
         cmdecode, cmdout, cmderr = run_hidef_cmd(cmdargs)
@@ -118,9 +115,8 @@ def main(args):
     theargs = _parse_arguments(desc, args[1:])
 
     try:
-        inputfile = os.path.abspath(theargs.input)
 
-        return run_hidef(inputfile)
+        return run_hidef(theargs)
 
     except Exception as e:
         sys.stderr.write('\n\nCaught exception: ' + str(e))
