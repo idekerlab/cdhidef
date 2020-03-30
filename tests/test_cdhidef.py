@@ -13,8 +13,7 @@ import sys
 import unittest
 import tempfile
 import shutil
-
-
+from unittest.mock import MagicMock
 from cdhidef import cdhidefcmd
 
 
@@ -37,7 +36,7 @@ class TestCdhidef(unittest.TestCase):
             tfile = os.path.join(temp_dir, 'foo')
             myargs = [tfile]
             theargs = cdhidefcmd._parse_arguments('desc', myargs)
-            res = cdhidefcmd.run_hidef(tfile, theargs)
+            res = cdhidefcmd.run_hidef(theargs)
             self.assertEqual(3, res)
         finally:
             shutil.rmtree(temp_dir)
@@ -49,7 +48,7 @@ class TestCdhidef(unittest.TestCase):
             open(tfile, 'a').close()
             myargs = [tfile]
             theargs = cdhidefcmd._parse_arguments('desc', myargs)
-            res = cdhidefcmd.run_hidef(tfile, theargs)
+            res = cdhidefcmd.run_hidef(theargs)
             self.assertEqual(4, res)
         finally:
             shutil.rmtree(temp_dir)
@@ -72,6 +71,17 @@ class TestCdhidef(unittest.TestCase):
             myargs = ['prog', tfile]
             res = cdhidefcmd.main(myargs)
             self.assertEqual(4, res)
+        finally:
+            shutil.rmtree(temp_dir)
+
+    def test_createtmpdir(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            params = MagicMock()
+            params.tempdir = temp_dir
+            foo = cdhidefcmd.create_tmpdir(params)
+            self.assertTrue(os.path.isdir(foo))
+            self.assertEqual(temp_dir, os.path.dirname(foo))
         finally:
             shutil.rmtree(temp_dir)
 
