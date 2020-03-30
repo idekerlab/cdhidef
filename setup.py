@@ -23,7 +23,7 @@ requirements = [
 ]
 
 test_requirements = [
-    # TODO: put package test requirements here
+    'mock'
 ]
 
 setup(
