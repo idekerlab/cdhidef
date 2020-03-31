@@ -159,7 +159,8 @@ def run_hidef(theargs):
     :return:
     """
     cmdargs = []
-    cmdargs.extend([theargs.hidefcmd, '--g', theargs.input])
+    cmdargs.extend([theargs.hidefcmd, '--g', theargs.input,
+                    '--skipclug', '--skipgml'])
     if theargs.input is None or not os.path.isfile(theargs.input):
         sys.stderr.write(str(theargs.input) + ' is not a file')
         return 3
