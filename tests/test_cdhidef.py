@@ -96,7 +96,7 @@ class TestCdhidef(unittest.TestCase):
         res = cdhidefcmd.convert_hidef_output_to_cdaps(f_out,
                                                        TestCdhidef.HUNDRED_NODE_DIR)
         self.assertEqual(None, res)
-        self.assertEqual(3629, len(f_out.getvalue()))
+        self.assertTrue(len(f_out.getvalue()) > 3500)
 
 
 if __name__ == '__main__':
