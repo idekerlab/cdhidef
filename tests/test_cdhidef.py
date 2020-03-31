@@ -13,11 +13,17 @@ import sys
 import unittest
 import tempfile
 import shutil
+import io
 from unittest.mock import MagicMock
 from cdhidef import cdhidefcmd
 
 
 class TestCdhidef(unittest.TestCase):
+
+    TEST_DIR = os.path.dirname(__file__)
+
+    HUNDRED_NODE_DIR = os.path.join(TEST_DIR, 'data',
+                                    '100node_example')
 
     def setUp(self):
         pass
@@ -84,6 +90,13 @@ class TestCdhidef(unittest.TestCase):
             self.assertEqual(temp_dir, os.path.dirname(foo))
         finally:
             shutil.rmtree(temp_dir)
+
+    def test_convert_hidef_output_to_cdaps_with_hundred(self):
+        f_out = io.StringIO()
+        res = cdhidefcmd.convert_hidef_output_to_cdaps(f_out,
+                                                       TestCdhidef.HUNDRED_NODE_DIR)
+        self.assertEqual(None, res)
+        self.assertEqual(3629, len(f_out.getvalue()))
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ import argparse
 import traceback
 import subprocess
 import uuid
+import csv
 import shutil
 
 DEFAULT_ERR_MSG = ('Did not get any clusters from HiDeF. This could be ' +
@@ -58,6 +59,99 @@ def run_hidef_cmd(cmd):
     return p.returncode, out, err
 
 
+def get_max_node_id(nodes_file):
+    """
+
+    :param nodes_file:
+    :return:
+    """
+    maxval = None
+    with open(nodes_file, 'r') as csvfile:
+        linereader = csv.reader(csvfile, delimiter='\t')
+        for row in linereader:
+            for node in row[2].split(' '):
+                if maxval is None:
+                    maxval = int(node)
+                    continue
+                curval = int(node)
+                if curval > maxval:
+                    maxval = curval
+    return maxval
+
+
+def write_members_for_row(out_stream, row, cur_node_id):
+    """
+
+    :param out_stream:
+    :param row:
+    :param cur_node_id:
+    :return:
+    """
+    for node in row[2].split(' '):
+        out_stream.write(str(cur_node_id) + ',' +
+                         node + ',c-m;')
+
+def update_cluster_node_map(cluster_node_map, cluster, max_node_id):
+    """
+
+    :param cluster_node_map:
+    :param cluster:
+    :param max_node_id:
+    :return:
+    """
+    if cluster not in cluster_node_map:
+        max_node_id += 1
+        cluster_node_map[cluster] = max_node_id
+        cur_node_id = max_node_id
+    else:
+        cur_node_id = cluster_node_map[cluster]
+    return max_node_id, cur_node_id
+
+
+def write_communities(out_stream, edge_file, cluster_node_map):
+    """
+
+    :param out_stream:
+    :param edgefile:
+    :return:
+    """
+    with open(edge_file, 'r') as csvfile:
+        linereader = csv.reader(csvfile, delimiter='\t')
+        for row in linereader:
+            out_stream.write(str(cluster_node_map[row[0]]) + ',' +
+                             str(cluster_node_map[row[1]]) + ',c-c;')
+
+
+def convert_hidef_output_to_cdaps(out_stream, tmpdir):
+    """
+    Looks for x.nodes and x.edges in `tmpdir` directory
+    to generate output in COMMUNITYDETECTRESULT format:
+    https://github.com/idekerlab/communitydetection-rest-server/wiki/COMMUNITYDETECTRESULT-format
+
+    which is
+    :param out_stream: output stream to write results
+    :type out_stream: file like object
+    :param tmpdir:
+    :type tmpdir: str
+    :return:
+    """
+    nodefile = os.path.join(tmpdir, 'x.nodes')
+    max_node_id = get_max_node_id(nodefile)
+    cluster_node_map = {}
+    with open(nodefile, 'r') as csvfile:
+        linereader = csv.reader(csvfile, delimiter='\t')
+        for row in linereader:
+            max_node_id, cur_node_id = update_cluster_node_map(cluster_node_map,
+                                                               row[0],
+                                                               max_node_id)
+            write_members_for_row(out_stream, row,
+                                  cur_node_id)
+    edge_file = os.path.join(tmpdir, 'x.edges')
+    write_communities(out_stream, edge_file, cluster_node_map)
+    out_stream.write('\n')
+    return None
+
+
 def run_hidef(theargs):
     """
 
@@ -78,8 +172,7 @@ def run_hidef(theargs):
     try:
         outval = os.path.join(tmpdir, 'x')
         cmdargs.extend(['--o', outval])
-        sys.stderr.write('tmpdir: ' + tmpdir + '\n')
-        sys.stderr.write('Running ' + str(cmdargs) + '\n')
+        sys.stderr.write('Running ' + str(' '.join(cmdargs)) + '\n')
         sys.stderr.flush()
         cmdecode, cmdout, cmderr = run_hidef_cmd(cmdargs)
 
@@ -94,6 +187,7 @@ def run_hidef(theargs):
         if len(cmderr) > 0:
             sys.stderr.write('Error output from cmd: ' + str(cmderr) + '\n')
 
+        convert_hidef_output_to_cdaps(sys.stdout, tmpdir)
         sys.stdout.flush()
         return 0
     finally:
