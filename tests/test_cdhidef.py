@@ -14,8 +14,49 @@ import unittest
 import tempfile
 import shutil
 import io
+import stat
 from unittest.mock import MagicMock
 from cdhidef import cdhidefcmd
+
+
+def write_fake_hidef(fakecmd, stdout, stderr, srcdatadir,
+                     exitcode):
+    """Fake hidef command script
+    """
+    f = open(fakecmd, 'w')
+    f.write('#!/usr/bin/env python\n\n')
+    f.write('import sys\n')
+    f.write('import os\n')
+    f.write('import shutil\n')
+    f.write('import argparse\n\n')
+    f.write('parser = argparse.ArgumentParser()\n')
+    f.write('parser.add_argument(\'--o\')\n')
+    f.write('theargs = parser.parse_known_args(sys.argv[1:])\n')
+    f.write('sys.stdout.write(str(theargs) + \':::' +
+            stdout + '\')\n')
+    f.write('sys.stderr.write(\'' + stderr + '\')\n')
+
+    f.write('try:\n')
+    nodes_filename = cdhidefcmd.X_PREFIX + '.nodes'
+    src_nodes_file = os.path.join(srcdatadir, nodes_filename)
+
+    f.write('    shutil.copy(\'' + src_nodes_file +
+            '\', theargs[0].o + \'.nodes\')\n')
+    f.write('except Exception as e:\n')
+    f.write('    sys.stderr.write(str(e))\n')
+
+    f.write('try:\n')
+    edges_filename = cdhidefcmd.X_PREFIX + '.edges'
+    src_edges_file = os.path.join(srcdatadir, edges_filename)
+
+    f.write('    shutil.copy(\'' + src_edges_file +
+            '\', theargs[0].o + \'.edges\')\n')
+    f.write('except Exception as e:\n')
+    f.write('    sys.stderr.write(str(e))\n')
+    f.write('sys.exit(' + str(exitcode) + ')\n')
+    f.flush()
+    f.close()
+    os.chmod(fakecmd, stat.S_IRWXU)
 
 
 class TestCdhidef(unittest.TestCase):
@@ -145,15 +186,20 @@ class TestCdhidef(unittest.TestCase):
         self.assertEqual('--alg', optargs[14])
         self.assertEqual('louvain', optargs[15])
 
-
     def test_run_hidef_no_file(self):
         temp_dir = tempfile.mkdtemp()
         try:
             tfile = os.path.join(temp_dir, 'foo')
             myargs = [tfile]
+            f_out = io.StringIO()
+            f_err = io.StringIO()
             theargs = cdhidefcmd._parse_arguments('desc', myargs)
-            res = cdhidefcmd.run_hidef(theargs)
+            res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                       err_stream=f_err)
             self.assertEqual(3, res)
+            self.assertEqual(tfile + ' is not a file',
+                             f_err.getvalue())
+            self.assertEqual('', f_out.getvalue())
         finally:
             shutil.rmtree(temp_dir)
 
@@ -163,9 +209,90 @@ class TestCdhidef(unittest.TestCase):
             tfile = os.path.join(temp_dir, 'foo')
             open(tfile, 'a').close()
             myargs = [tfile]
+            f_out = io.StringIO()
+            f_err = io.StringIO()
             theargs = cdhidefcmd._parse_arguments('desc', myargs)
-            res = cdhidefcmd.run_hidef(theargs)
+            res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                       err_stream=f_err)
             self.assertEqual(4, res)
+            self.assertEqual(tfile + ' is an empty file',
+                             f_err.getvalue())
+            self.assertEqual('', f_out.getvalue())
+        finally:
+            shutil.rmtree(temp_dir)
+
+    def test_run_hidef_success(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            input_file = os.path.join(TestCdhidef.HUNDRED_NODE_DIR,
+                                      'input.txt')
+
+            f_out = io.StringIO()
+            f_err = io.StringIO()
+            fakecmd = os.path.join(temp_dir, 'foo.py')
+            write_fake_hidef(fakecmd, 'stdout',
+                             'stderr',
+                             TestCdhidef.HUNDRED_NODE_DIR, 0)
+            myargs = [input_file, '--tempdir', temp_dir,
+                      '--hidefcmd', fakecmd]
+            theargs = cdhidefcmd._parse_arguments('desc', myargs)
+
+            res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                       err_stream=f_err)
+
+            err_data = f_err.getvalue()
+
+            self.assertTrue("'--skipclug', '--skipgml', '--t', "
+                            "'0.1', '--k', '5', '--j', '0.75', "
+                            "'--minres', '0.001', '--maxres', "
+                            "'100.0', '--s', '1.0', '--ct', '75', "
+                            "'--alg', 'louvain'" in err_data)
+
+            out_data = f_out.getvalue()
+            self.assertEqual(3639, len(out_data))
+            self.assertEqual(0, res)
+        finally:
+            shutil.rmtree(temp_dir)
+
+    def test_run_hidef_success_altparams(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            input_file = os.path.join(TestCdhidef.HUNDRED_NODE_DIR,
+                                      'input.txt')
+
+            f_out = io.StringIO()
+            f_err = io.StringIO()
+            fakecmd = os.path.join(temp_dir, 'foo.py')
+            write_fake_hidef(fakecmd, 'stdout',
+                             'stderr',
+                             TestCdhidef.HUNDRED_NODE_DIR, 0)
+            myargs = [input_file,
+                      '--n', '1',
+                      '--t', '0.2',
+                      '--k', '3',
+                      '--j', '0.4',
+                      '--minres', '0.5',
+                      '--maxres', '0.6',
+                      '--s', '0.7',
+                      '--ct', '8',
+                      '--alg', 'leiden',
+                      '--hidefcmd', fakecmd,
+                      '--tempdir', temp_dir]
+            theargs = cdhidefcmd._parse_arguments('desc', myargs)
+
+            res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                       err_stream=f_err)
+
+            err_data = f_err.getvalue()
+            self.assertTrue("'--skipclug', '--skipgml', '--n', '1', '--t', "
+                            "'0.2', '--k', '3', '--j', '0.4', "
+                            "'--minres', '0.5', '--maxres', "
+                            "'0.6', '--s', '0.7', '--ct', '8', "
+                            "'--alg', 'leiden'" in err_data)
+
+            out_data = f_out.getvalue()
+            self.assertEqual(3639, len(out_data))
+            self.assertEqual(0, res)
         finally:
             shutil.rmtree(temp_dir)
 
@@ -207,6 +334,8 @@ class TestCdhidef(unittest.TestCase):
                                                        TestCdhidef.HUNDRED_NODE_DIR)
         self.assertEqual(None, res)
         self.assertEqual(3639, len(f_out.getvalue()))
+
+
 
 
 if __name__ == '__main__':

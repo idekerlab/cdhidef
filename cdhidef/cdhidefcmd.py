@@ -14,6 +14,7 @@ DEFAULT_ERR_MSG = ('Did not get any clusters from HiDeF. Not sure'
 
 X_PREFIX = 'x'
 
+
 class Formatter(argparse.ArgumentDefaultsHelpFormatter,
                 argparse.RawDescriptionHelpFormatter):
     pass
