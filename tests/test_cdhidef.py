@@ -296,6 +296,35 @@ class TestCdhidef(unittest.TestCase):
         finally:
             shutil.rmtree(temp_dir)
 
+    def test_run_hidef_error(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            input_file = os.path.join(TestCdhidef.HUNDRED_NODE_DIR,
+                                      'input.txt')
+
+            f_out = io.StringIO()
+            f_err = io.StringIO()
+            fakecmd = os.path.join(temp_dir, 'foo.py')
+            write_fake_hidef(fakecmd, 'stdout',
+                             'stderr',
+                             TestCdhidef.HUNDRED_NODE_DIR, 1)
+            myargs = [input_file, '--tempdir', temp_dir,
+                      '--hidefcmd', fakecmd]
+            theargs = cdhidefcmd._parse_arguments('desc', myargs)
+
+            res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                       err_stream=f_err)
+
+            err_data = f_err.getvalue()
+
+            self.assertTrue('Command failed with '
+                            'non-zero exit code: 1 : ' in err_data)
+            out_data = f_out.getvalue()
+            self.assertEqual(0, len(out_data))
+            self.assertEqual(1, res)
+        finally:
+            shutil.rmtree(temp_dir)
+
     def test_main_invalid_file(self):
         temp_dir = tempfile.mkdtemp()
         try:
