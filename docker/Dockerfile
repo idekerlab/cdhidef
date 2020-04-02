@@ -11,7 +11,8 @@ RUN mkdir /tmp/hidef \
          && cd HiDeF \
          && /opt/conda/bin/python setup.py bdist_wheel \
          && /opt/conda/bin/pip install dist/hidef*whl \
-         && cd /tmp
+         && cd /tmp \
+         && rm -rf /tmp/hidef
 
 RUN mkdir /tmp/cdhidef
 COPY dist/*.whl /tmp/cdhidef
