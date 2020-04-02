@@ -308,8 +308,8 @@ def run_hidef(theargs, out_stream=sys.stdout,
     try:
         outval = os.path.join(tmpdir, X_PREFIX)
         cmdargs.extend(['--o', outval])
-        sys.stderr.write('Running ' + str(' '.join(cmdargs)) + '\n')
-        sys.stderr.flush()
+        err_stream.write('Running ' + str(' '.join(cmdargs)) + '\n')
+        err_stream.flush()
         cmdecode, cmdout, cmderr = run_hidef_cmd(cmdargs)
 
         if cmdecode != 0:
@@ -323,11 +323,15 @@ def run_hidef(theargs, out_stream=sys.stdout,
         if len(cmderr) > 0:
             err_stream.write('Error output from cmd: ' + str(cmderr) + '\n')
 
-        convert_hidef_output_to_cdaps(out_stream, tmpdir)
-        err_stream.flush()
-        out_stream.flush()
+        try:
+            convert_hidef_output_to_cdaps(out_stream, tmpdir)
+        except FileNotFoundError as fe:
+            err_stream.write('No output from hidef: ' + str(fe) + '\n')
+            return 5
         return 0
     finally:
+        err_stream.flush()
+        out_stream.flush()
         shutil.rmtree(tmpdir)
 
 
