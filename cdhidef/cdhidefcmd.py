@@ -32,32 +32,26 @@ def _parse_arguments(desc, args):
     parser.add_argument('input',
                         help='Edge file in tab delimited format')
     parser.add_argument('--n', type=int,
-                        help='explore the maximum resolution '
-                             'parameter until cluster number '
-                             'is close enough to this value. '
-                             'Increase this number to get more '
-                             'smaller clusters')
-    parser.add_argument('--t', type=float, default=0.1,
-                        help='(inversed) density of sampling '
-                             'the resolution parameter; decrease '
-                             'this number to introduce more transient '
-                             'clusters (with longer running time);')
+                        help='Target community number. Explore the'
+                             'maximum resolution parameter until the '
+                             'number of generated communities at this '
+                             'resolution is close enough to this value. '
+                             'Increase to get more smaller communities')
     parser.add_argument('--k', type=int, default=5,
-                        help='a parameter to pre-filter instable '
-                             'clusters')
-    parser.add_argument('--j', type=float, default=0.75,
-                        help='a jaccard index cutoff')
-    parser.add_argument('--minres', type=float, default=0.001,
-                        help='minimum resolution parameter')
-    parser.add_argument('--maxres', type=float, default=100.0,
-                        help='maximum resolution parameter')
-    parser.add_argument('--s', type=float, default=1.0,
-                        help='a subsample parameter')
+                        help='Persistence threshold. Increase to '
+                             'delete unstable clusters, and get fewer '
+                             'communities')
+    parser.add_argument('--maxres', type=float, default=50.0,
+                        help='Maximum resolution parameter. '
+                             'Increase to get more smaller communities')
     parser.add_argument('--ct', default=75, type=int,
-                        help='threshold in collapsing cluster')
+                        help='Consensus threshold. Threshold of '
+                             'collapsing community graph and'
+                             'choose geneas for each community')
     parser.add_argument('--alg', default='louvain',
                         choices=['louvain', 'leiden'],
-                        help='add the option to use leiden algorithm')
+                        help='Chose to use Louvain or the newer Leiden '
+                             'algorithm. Must be "louvain" or "leiden"')
     parser.add_argument('--hidefcmd',
                         default='hidef_finder.py',
                         help='Path to hidef_finder.py command')
@@ -264,12 +258,8 @@ def build_optional_arguments(theargs):
     if theargs.n is not None:
         cmdargs.extend(['--n', str(theargs.n)])
 
-    cmdargs.extend(['--t', str(theargs.t)])
     cmdargs.extend(['--k', str(theargs.k)])
-    cmdargs.extend(['--j', str(theargs.j)])
-    cmdargs.extend(['--minres', str(theargs.minres)])
     cmdargs.extend(['--maxres', str(theargs.maxres)])
-    cmdargs.extend(['--s', str(theargs.s)])
     cmdargs.extend(['--ct', str(theargs.ct)])
     cmdargs.extend(['--alg', theargs.alg])
     return cmdargs
