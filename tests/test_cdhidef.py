@@ -210,7 +210,7 @@ class TestCdhidef(unittest.TestCase):
                             "'--alg', 'louvain'" in err_data)
 
             out_data = f_out.getvalue()
-            self.assertEqual(3639, len(out_data))
+            self.assertEqual(4087, len(out_data))
             self.assertEqual(0, res)
         finally:
             shutil.rmtree(temp_dir)
@@ -248,7 +248,7 @@ class TestCdhidef(unittest.TestCase):
                             "'--alg', 'leiden'" in err_data)
 
             out_data = f_out.getvalue()
-            self.assertEqual(3639, len(out_data))
+            self.assertEqual(4087, len(out_data))
             self.assertEqual(0, res)
         finally:
             shutil.rmtree(temp_dir)
@@ -347,7 +347,7 @@ class TestCdhidef(unittest.TestCase):
         res = cdhidefcmd.convert_hidef_output_to_cdaps(f_out,
                                                        TestCdhidef.HUNDRED_NODE_DIR)
         self.assertEqual(None, res)
-        self.assertEqual(3639, len(f_out.getvalue()))
+        self.assertEqual(4087, len(f_out.getvalue()))
 
 
 

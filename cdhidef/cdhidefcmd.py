@@ -371,7 +371,7 @@ def run_hidef(theargs, out_stream=sys.stdout,
     finally:
         err_stream.flush()
         out_stream.flush()
-        # shutil.rmtree(tmpdir)
+        shutil.rmtree(tmpdir)
 
 
 def main(args):
