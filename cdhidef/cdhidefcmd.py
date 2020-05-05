@@ -14,6 +14,14 @@ DEFAULT_ERR_MSG = ('Did not get any clusters from HiDeF. Not sure'
 
 X_PREFIX = 'x'
 
+CDRES_KEY_NAME = 'communityDetectionResult'
+
+NODE_CX_KEY_NAME = 'nodeAttributesAsCX2'
+
+ATTR_DEC_NAME = 'attributeDeclarations'
+
+PERSISTENCE_COL_NAME = 'HiDeF_persistence'
+
 
 class Formatter(argparse.ArgumentDefaultsHelpFormatter,
                 argparse.RawDescriptionHelpFormatter):
@@ -174,6 +182,18 @@ def update_cluster_node_map(cluster_node_map, cluster, max_node_id):
     return max_node_id, cur_node_id
 
 
+def update_persistence_map(persistence_node_map, node_id, persistence_val):
+    """
+
+    :param persistence_node_map:
+    :param node_id:
+    :param persistence_val:
+    :return:
+    """
+    if node_id not in persistence_node_map:
+        persistence_node_map[node_id] = persistence_val
+
+
 def write_communities(out_stream, edge_file, cluster_node_map):
     """
     Writes out links between clusters in COMMUNITYDETECTRESULT format
@@ -204,6 +224,31 @@ def write_communities(out_stream, edge_file, cluster_node_map):
         for row in linereader:
             out_stream.write(str(cluster_node_map[row[0]]) + ',' +
                              str(cluster_node_map[row[1]]) + ',c-c;')
+    out_stream.write('",')
+
+
+def write_persistence_node_attribute(out_stream, persistence_map):
+    """
+
+    :param out_stream:
+    :param persistence_map:
+    :return:
+    """
+    out_stream.write('"' + NODE_CX_KEY_NAME + '": {')
+    out_stream.write('"' + ATTR_DEC_NAME + '": [{')
+    out_stream.write('"nodes": { "' + PERSISTENCE_COL_NAME +
+                     '": { "d": "integer", "a": "p1", "v": 0}}}],')
+    out_stream.write('"nodes": [')
+    is_first = True
+    for key in persistence_map:
+        if is_first is False:
+            out_stream.write(',')
+        else:
+            is_first = False
+        out_stream.write('{"id": ' + str(key) + ',')
+        out_stream.write('"v": { "p1": ' + str(persistence_map[key]) + '}}')
+
+    out_stream.write(']}}')
 
 
 def convert_hidef_output_to_cdaps(out_stream, tempdir):
@@ -231,16 +276,20 @@ def convert_hidef_output_to_cdaps(out_stream, tempdir):
     nodefile = os.path.join(tempdir, X_PREFIX + '.nodes')
     max_node_id = get_max_node_id(nodefile)
     cluster_node_map = {}
+    persistence_map = {}
+    out_stream.write('{"communityDetectionResult": "')
     with open(nodefile, 'r') as csvfile:
         linereader = csv.reader(csvfile, delimiter='\t')
         for row in linereader:
             max_node_id, cur_node_id = update_cluster_node_map(cluster_node_map,
                                                                row[0],
                                                                max_node_id)
+            update_persistence_map(persistence_map, cur_node_id, row[-1])
             write_members_for_row(out_stream, row,
                                   cur_node_id)
     edge_file = os.path.join(tempdir, X_PREFIX + '.edges')
     write_communities(out_stream, edge_file, cluster_node_map)
+    write_persistence_node_attribute(out_stream, persistence_map)
     out_stream.write('\n')
     return None
 
@@ -322,7 +371,7 @@ def run_hidef(theargs, out_stream=sys.stdout,
     finally:
         err_stream.flush()
         out_stream.flush()
-        shutil.rmtree(tmpdir)
+        # shutil.rmtree(tmpdir)
 
 
 def main(args):
@@ -334,7 +383,7 @@ def main(args):
     """
     desc = """
     Runs HiDeF on command line, sending output to standard
-    out 
+    out in new 
     """
     theargs = _parse_arguments(desc, args[1:])
     try:
