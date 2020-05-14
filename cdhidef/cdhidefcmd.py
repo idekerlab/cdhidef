@@ -65,6 +65,8 @@ def _parse_arguments(desc, args):
                         help='Path to hidef_finder.py command')
     parser.add_argument('--tempdir', default='/tmp',
                         help='Directory needed to hold files temporarily for processing')
+    parser.add_argument('--csvmaxfieldsize', type=int, default=100000000,
+                        help='Sets maximum field size for csv parser')
     return parser.parse_args(args)
 
 
@@ -343,6 +345,7 @@ def run_hidef(theargs, out_stream=sys.stdout,
         err_stream.write(str(theargs.input) + ' is an empty file')
         return 4
 
+    csv.field_size_limit(theargs.csvmaxfieldsize)
     tmpdir = create_tmpdir(theargs)
     try:
         outval = os.path.join(tmpdir, X_PREFIX)
