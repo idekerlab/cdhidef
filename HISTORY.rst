@@ -1,8 +1,9 @@
 =======
 History
 =======
+ 
 
-0.1.0 (ADD RELEASE DATE HERE)
+0.1.1 (2020-05-14)
 ------------------------------
 
 * Updated to generate new output that includes
