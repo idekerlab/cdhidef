@@ -2,10 +2,10 @@
 History
 =======
 
-0.2.0 (XXXX)
+0.2.0 (2020-05-19)
 ------------------------------
 
-* Bug fixes (TODO ADD DETAILS HERE)
+* Updated to pull cdhidef.0.2.0 of https://github.com/coleslaw481/HiDeF
 
 0.1.1 (2020-05-14)
 ------------------------------

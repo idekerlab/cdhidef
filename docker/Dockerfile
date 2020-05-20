@@ -7,7 +7,7 @@ RUN conda install -y -c conda-forge leidenalg
 
 RUN mkdir /tmp/hidef \
          && cd /tmp/hidef \
-         && git clone https://github.com/coleslaw481/HiDeF \
+         && git clone -b cdhidef.0.2.0 --depth 1 https://github.com/coleslaw481/HiDeF \
          && cd HiDeF \
          && /opt/conda/bin/python setup.py bdist_wheel \
          && /opt/conda/bin/pip install dist/hidef*whl \
