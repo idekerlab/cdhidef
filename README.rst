@@ -2,26 +2,69 @@
 Community Detection HiDeF
 ===================================================
 
-.. image:: https://img.shields.io/pypi/v/cdhidef.svg
-        :target: https://pypi.python.org/pypi/cdhidef
+This repository creates a CDAPS compatible community detection Docker image using HiDeF `(Preprint) <https://doi.org/10.1101/2020.06.16.151555>`_
+packaged from https://github.com/fanzheng10/HiDeF
 
-.. image:: https://img.shields.io/travis/idekerlab/cdhidef.svg
-        :target: https://travis-ci.org/idekerlab/cdhidef
+Dependencies
+------------
 
-.. image:: https://readthedocs.org/projects/cdhidef/badge/?version=latest
-        :target: https://cdhidef.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
+* `Docker <https://www.docker.com/>`_
+* `make <https://www.gnu.org/software/make/>`_ (to build)
+* Python (to build)
 
-.. image:: https://requires.io/github/idekerlab/cdhidef/requirements.svg?branch=master
-        :target: https://requires.io/github/idekerlab/cdhidef/requirements?branch=master
-        :alt: Dependencies
+Direct invocation
+------------------
 
+Version `0.2.1` can be directly pulled from `Dockerhub <https://hub.docker.com/>`_ with this command:
 
+.. code-block::
 
-Features
+   docker pull coleslawndex/cdhidef:0.2.1
+
+Building
 --------
 
-* TODO
+.. code-block::
+
+   git clone https://github.com/idekerlab/cdhidef
+   cd cdhidef
+   make dockerbuild
+
+Run **make** command with no arguments to see other build/deploy options including creation of Docker image
+
+.. code-block::
+
+   make
+
+Output:
+
+.. code-block::
+
+   clean                remove all build, test, coverage and Python artifacts
+   clean-build          remove build artifacts
+   clean-pyc            remove Python file artifacts
+   clean-test           remove test and coverage artifacts
+   lint                 check style with flake8
+   test                 run tests quickly with the default Python
+   test-all             run tests on every Python version with tox
+   coverage             check code coverage quickly with the default Python
+   docs                 generate Sphinx HTML documentation, including API docs
+   servedocs            compile the docs watching for changes
+   testrelease          package and upload a TEST release
+   release              package and upload a release
+   dist                 builds source and wheel package
+   install              install the package to the active Python's site-packages
+   dockerbuild          build docker image and store in local repository
+   dockerpush           push image to dockerhub
+
+
+Usage
+-----
+
+.. code-block::
+
+   docker run -v coleslawndex/cdhidef:0.2.1 -h
+
 
 Credits
 ---------
