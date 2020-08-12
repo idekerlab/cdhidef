@@ -2,6 +2,12 @@
 History
 =======
 
+0.2.2 (2020-08-12)
+------------------------------
+
+* Updated to pull cdhidef.0.2.2 of https://github.com/coleslaw481/HiDeF
+  which fixed a bug where --alg leiden was failing
+
 0.2.1 (2020-06-15)
 ------------------------------
 
