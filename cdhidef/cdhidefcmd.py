@@ -52,7 +52,7 @@ def _parse_arguments(desc, args):
     parser.add_argument('--maxres', type=float, default=25.0,
                         help='Maximum resolution parameter. '
                              'Increase to get more smaller communities')
-    parser.add_argument('-p', default=75, type=int,
+    parser.add_argument('--p', default=75, type=int,
                         help='Consensus threshold. Threshold of '
                              'collapsing community graph and'
                              'choose geneas for each community')
@@ -311,7 +311,7 @@ def build_optional_arguments(theargs):
 
     cmdargs.extend(['--k', str(theargs.k)])
     cmdargs.extend(['--maxres', str(theargs.maxres)])
-    cmdargs.extend(['-p', str(theargs.p)])
+    cmdargs.extend(['--p', str(theargs.p)])
     cmdargs.extend(['--alg', theargs.alg])
     return cmdargs
 

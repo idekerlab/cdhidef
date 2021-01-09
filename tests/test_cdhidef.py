@@ -89,7 +89,7 @@ class TestCdhidef(unittest.TestCase):
                   '--n', '1',
                   '--k', '3',
                   '--maxres', '0.6',
-                  '-p', '8',
+                  '--p', '8',
                   '--alg', 'leiden',
                   '--hidefcmd', 'foo',
                   '--tempdir', 'yo']
@@ -108,7 +108,7 @@ class TestCdhidef(unittest.TestCase):
                   '--n', '1',
                   '--k', '3',
                   '--maxres', '0.6',
-                  '-p', '8',
+                  '--p', '8',
                   '--alg', 'leiden',
                   '--hidefcmd', 'foo',
                   '--tempdir', 'yo']
@@ -124,7 +124,7 @@ class TestCdhidef(unittest.TestCase):
         self.assertEqual('--maxres', optargs[4])
         self.assertEqual('0.6', optargs[5])
 
-        self.assertEqual('-p', optargs[6])
+        self.assertEqual('--p', optargs[6])
         self.assertEqual('8', optargs[7])
 
         self.assertEqual('--alg', optargs[8])
@@ -141,7 +141,7 @@ class TestCdhidef(unittest.TestCase):
         self.assertEqual('--maxres', optargs[2])
         self.assertEqual('25.0', optargs[3])
 
-        self.assertEqual('-p', optargs[4])
+        self.assertEqual('--p', optargs[4])
         self.assertEqual('75', optargs[5])
 
         self.assertEqual('--alg', optargs[6])
@@ -206,7 +206,7 @@ class TestCdhidef(unittest.TestCase):
             self.assertTrue("'--skipgml', "
                             "'--k', '5', "
                             "'--maxres', "
-                            "'25.0', '-p', '75', "
+                            "'25.0', '--p', '75', "
                             "'--alg', 'leiden'" in err_data)
 
             out_data = f_out.getvalue()
@@ -231,7 +231,7 @@ class TestCdhidef(unittest.TestCase):
                       '--n', '1',
                       '--k', '3',
                       '--maxres', '0.6',
-                      '-p', '8',
+                      '--p', '8',
                       '--alg', 'leiden',
                       '--hidefcmd', fakecmd,
                       '--tempdir', temp_dir]
@@ -245,7 +245,7 @@ class TestCdhidef(unittest.TestCase):
             self.assertTrue("'--skipgml', '--n', '1', "
                             "'--k', '3', "
                             "'--maxres', "
-                            "'0.6', '-p', '8', "
+                            "'0.6', '--p', '8', "
                             "'--alg', 'leiden'" in err_data)
 
             out_data = f_out.getvalue()
