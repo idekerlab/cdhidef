@@ -49,14 +49,14 @@ def _parse_arguments(desc, args):
                         help='Persistence threshold. Increase to '
                              'delete unstable clusters, and get fewer '
                              'communities')
-    parser.add_argument('--maxres', type=float, default=50.0,
+    parser.add_argument('--maxres', type=float, default=25.0,
                         help='Maximum resolution parameter. '
                              'Increase to get more smaller communities')
-    parser.add_argument('--ct', default=75, type=int,
+    parser.add_argument('-p', default=75, type=int,
                         help='Consensus threshold. Threshold of '
                              'collapsing community graph and'
                              'choose geneas for each community')
-    parser.add_argument('--alg', default='louvain',
+    parser.add_argument('--alg', default='leiden',
                         choices=['louvain', 'leiden'],
                         help='Chose to use Louvain or the newer Leiden '
                              'algorithm. Must be "louvain" or "leiden"')
@@ -311,7 +311,7 @@ def build_optional_arguments(theargs):
 
     cmdargs.extend(['--k', str(theargs.k)])
     cmdargs.extend(['--maxres', str(theargs.maxres)])
-    cmdargs.extend(['--ct', str(theargs.ct)])
+    cmdargs.extend(['-p', str(theargs.p)])
     cmdargs.extend(['--alg', theargs.alg])
     return cmdargs
 
@@ -334,7 +334,7 @@ def run_hidef(theargs, out_stream=sys.stdout,
     """
     cmdargs = []
     cmdargs.extend([theargs.hidefcmd, '--g', theargs.input,
-                    '--skipclug', '--skipgml'])
+                    '--skipgml'])
     cmdargs.extend(build_optional_arguments(theargs))
 
     if theargs.input is None or not os.path.isfile(theargs.input):

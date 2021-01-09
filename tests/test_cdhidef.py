@@ -78,9 +78,9 @@ class TestCdhidef(unittest.TestCase):
         self.assertEqual('inputarg', res.input)
         self.assertEqual(None, res.n)
         self.assertEqual(5, res.k)
-        self.assertEqual(50.0, res.maxres)
-        self.assertEqual(75, res.ct)
-        self.assertEqual('louvain', res.alg)
+        self.assertEqual(25.0, res.maxres)
+        self.assertEqual(75, res.p)
+        self.assertEqual('leiden', res.alg)
         self.assertEqual('hidef_finder.py', res.hidefcmd)
         self.assertEqual('/tmp', res.tempdir)
 
@@ -89,7 +89,7 @@ class TestCdhidef(unittest.TestCase):
                   '--n', '1',
                   '--k', '3',
                   '--maxres', '0.6',
-                  '--ct', '8',
+                  '-p', '8',
                   '--alg', 'leiden',
                   '--hidefcmd', 'foo',
                   '--tempdir', 'yo']
@@ -98,7 +98,7 @@ class TestCdhidef(unittest.TestCase):
         self.assertEqual(1, res.n)
         self.assertEqual(3, res.k)
         self.assertEqual(0.6, res.maxres)
-        self.assertEqual(8, res.ct)
+        self.assertEqual(8, res.p)
         self.assertEqual('leiden', res.alg)
         self.assertEqual('foo', res.hidefcmd)
         self.assertEqual('yo', res.tempdir)
@@ -108,7 +108,7 @@ class TestCdhidef(unittest.TestCase):
                   '--n', '1',
                   '--k', '3',
                   '--maxres', '0.6',
-                  '--ct', '8',
+                  '-p', '8',
                   '--alg', 'leiden',
                   '--hidefcmd', 'foo',
                   '--tempdir', 'yo']
@@ -124,7 +124,7 @@ class TestCdhidef(unittest.TestCase):
         self.assertEqual('--maxres', optargs[4])
         self.assertEqual('0.6', optargs[5])
 
-        self.assertEqual('--ct', optargs[6])
+        self.assertEqual('-p', optargs[6])
         self.assertEqual('8', optargs[7])
 
         self.assertEqual('--alg', optargs[8])
@@ -139,13 +139,13 @@ class TestCdhidef(unittest.TestCase):
         self.assertEqual('5', optargs[1])
 
         self.assertEqual('--maxres', optargs[2])
-        self.assertEqual('50.0', optargs[3])
+        self.assertEqual('25.0', optargs[3])
 
-        self.assertEqual('--ct', optargs[4])
+        self.assertEqual('-p', optargs[4])
         self.assertEqual('75', optargs[5])
 
         self.assertEqual('--alg', optargs[6])
-        self.assertEqual('louvain', optargs[7])
+        self.assertEqual('leiden', optargs[7])
 
     def test_run_hidef_no_file(self):
         temp_dir = tempfile.mkdtemp()
@@ -203,11 +203,11 @@ class TestCdhidef(unittest.TestCase):
 
             err_data = f_err.getvalue()
 
-            self.assertTrue("'--skipclug', '--skipgml', "
+            self.assertTrue("'--skipgml', "
                             "'--k', '5', "
                             "'--maxres', "
-                            "'50.0', '--ct', '75', "
-                            "'--alg', 'louvain'" in err_data)
+                            "'25.0', '-p', '75', "
+                            "'--alg', 'leiden'" in err_data)
 
             out_data = f_out.getvalue()
             self.assertEqual(4087, len(out_data))
@@ -231,7 +231,7 @@ class TestCdhidef(unittest.TestCase):
                       '--n', '1',
                       '--k', '3',
                       '--maxres', '0.6',
-                      '--ct', '8',
+                      '-p', '8',
                       '--alg', 'leiden',
                       '--hidefcmd', fakecmd,
                       '--tempdir', temp_dir]
@@ -241,10 +241,11 @@ class TestCdhidef(unittest.TestCase):
                                        err_stream=f_err)
 
             err_data = f_err.getvalue()
-            self.assertTrue("'--skipclug', '--skipgml', '--n', '1', "
+
+            self.assertTrue("'--skipgml', '--n', '1', "
                             "'--k', '3', "
                             "'--maxres', "
-                            "'0.6', '--ct', '8', "
+                            "'0.6', '-p', '8', "
                             "'--alg', 'leiden'" in err_data)
 
             out_data = f_out.getvalue()
