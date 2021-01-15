@@ -2,6 +2,23 @@
 History
 =======
 
+1.1.1b1 (2020-01-15)
+------------------------------
+
+* Updated to pull cdhidef.1.1.1b1 of https://github.com/coleslaw481/HiDeF
+
+* Added ``--numthreads`` flag with default value set to ``4``. This is to support
+  new ``--numthreads`` flag in HiDeF 1.1.1 beta
+
+* Renamed ``--ct`` flag to ``--p`` to match HiDeF 1.1.1 beta
+
+* Reduced ``--maxres`` default to ``25.0``
+
+* No longer passing ``--skipclug`` flag to HiDeF since HiDeF 1.1.1 beta
+  removed this option
+
+* Switched default algorithm ``--alg`` to ``leiden``
+
 0.2.2 (2020-08-12)
 ------------------------------
 
