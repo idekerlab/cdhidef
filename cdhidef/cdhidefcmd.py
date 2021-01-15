@@ -67,9 +67,9 @@ def _parse_arguments(desc, args):
                         help='Directory needed to hold files temporarily for processing')
     parser.add_argument('--csvmaxfieldsize', type=int, default=100000000,
                         help='Sets maximum field size for csv parser')
-    parser.add_argument('--numthreads', type=int, default=1,
+    parser.add_argument('--numthreads', type=int, default=4,
                         help='Sets number of threads to use. '
-                             'If 0 or negative, '
+                             'If 0 or negative, then '
                              'value of multiprocessing.cpu_count() is used')
     return parser.parse_args(args)
 
