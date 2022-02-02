@@ -5,14 +5,7 @@ RUN conda install -y -c conda-forge igraph
 RUN conda install -y -c conda-forge louvain
 RUN conda install -y -c conda-forge leidenalg
 
-RUN mkdir /tmp/hidef \
-         && cd /tmp/hidef \
-         && git clone --depth 1 https://github.com/coleslaw481/HiDeF \
-         && cd HiDeF \
-         && /opt/conda/bin/python setup.py bdist_wheel \
-         && /opt/conda/bin/pip install dist/hidef*whl \
-         && cd /tmp \
-         && rm -rf /tmp/hidef
+RUN /opt/conda/bin/pip install hidef==1.1.3
 
 RUN mkdir /tmp/cdhidef
 COPY dist/*.whl /tmp/cdhidef
