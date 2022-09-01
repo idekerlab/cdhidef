@@ -2,6 +2,13 @@
 History
 =======
 
+1.2.0 (2022-09-01)
+------------------------------
+
+* Added ``--convertresult`` which assumes the main
+  input parameter points to HiDEF x.nodes or x.edges results
+  file and parses that without running the HiDEF
+
 1.1.1b1 (2020-01-15)
 ------------------------------
 

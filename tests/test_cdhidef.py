@@ -15,6 +15,7 @@ import tempfile
 import shutil
 import io
 import stat
+import json
 from unittest.mock import MagicMock
 from cdhidef import cdhidefcmd
 
@@ -350,7 +351,89 @@ class TestCdhidef(unittest.TestCase):
         self.assertEqual(None, res)
         self.assertEqual(4087, len(f_out.getvalue()))
 
+    def test_convertresult_flag_set_with_nodes_file(self):
+        f_out = io.StringIO()
+        f_err = io.StringIO()
+        input_file = os.path.join(TestCdhidef.HUNDRED_NODE_DIR, 'x.nodes')
+        myargs = [input_file, '--convertresult']
+        theargs = cdhidefcmd._parse_arguments('desc', myargs)
 
+        res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                   err_stream=f_err)
+
+        err_data = f_err.getvalue()
+
+        out_data = f_out.getvalue()
+        self.assertEqual(4087, len(out_data))
+        heir_res = json.loads(out_data)
+        with open(os.path.join(TestCdhidef.HUNDRED_NODE_DIR, 'x.expectedresult'), 'r') as f:
+            expected_heir = json.load(f)
+        self.assertEqual(expected_heir, heir_res)
+        self.assertEqual('', err_data)
+        self.assertEqual(0, res)
+
+    def test_convertresult_flag_set_with_edges_file(self):
+        f_out = io.StringIO()
+        f_err = io.StringIO()
+        input_file = os.path.join(TestCdhidef.HUNDRED_NODE_DIR, 'x.edges')
+        myargs = [input_file, '--convertresult']
+        theargs = cdhidefcmd._parse_arguments('desc', myargs)
+
+        res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                   err_stream=f_err)
+
+        err_data = f_err.getvalue()
+
+        out_data = f_out.getvalue()
+        self.assertEqual(4087, len(out_data))
+        heir_res = json.loads(out_data)
+        with open(os.path.join(TestCdhidef.HUNDRED_NODE_DIR, 'x.expectedresult'), 'r') as f:
+            expected_heir = json.load(f)
+        self.assertEqual(expected_heir, heir_res)
+        self.assertEqual('', err_data)
+        self.assertEqual(0, res)
+
+    def test_convertresult_flag_set_with_invalid_suffix_file(self):
+        f_out = io.StringIO()
+        f_err = io.StringIO()
+        input_file = os.path.join(TestCdhidef.HUNDRED_NODE_DIR, 'x.expectedresult')
+        myargs = [input_file, '--convertresult']
+        theargs = cdhidefcmd._parse_arguments('desc', myargs)
+
+        res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                   err_stream=f_err)
+
+        err_data = f_err.getvalue()
+
+        out_data = f_out.getvalue()
+        self.assertEqual(0, len(out_data))
+
+        self.assertTrue('--convertresult expects input to be ' in err_data)
+        self.assertEqual(6, res)
+
+    def test_convertresult_flag_set_with_edges_file_missing(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            f_out = io.StringIO()
+            f_err = io.StringIO()
+            shutil.copy(os.path.join(TestCdhidef.HUNDRED_NODE_DIR, 'x.nodes'),
+                        os.path.join(temp_dir, 'x.nodes'))
+            input_file = os.path.join(temp_dir, 'x.nodes')
+            myargs = [input_file, '--convertresult']
+            theargs = cdhidefcmd._parse_arguments('desc', myargs)
+
+            res = cdhidefcmd.run_hidef(theargs, out_stream=f_out,
+                                       err_stream=f_err)
+
+            err_data = f_err.getvalue()
+
+            out_data = f_out.getvalue()
+            self.assertEqual(3540, len(out_data))
+
+            self.assertTrue('No such file' in err_data)
+            self.assertEqual(5, res)
+        finally:
+            shutil.rmtree(temp_dir)
 
 
 if __name__ == '__main__':
