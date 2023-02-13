@@ -1,5 +1,8 @@
 FROM continuumio/miniconda3
 
+RUN apt-get --allow-releaseinfo-change update
+RUN apt-get install -y build-essential
+
 RUN conda install -y -c conda-forge python-igraph
 RUN conda install -y -c conda-forge igraph
 RUN conda install -y -c conda-forge louvain
