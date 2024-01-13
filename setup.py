@@ -19,7 +19,9 @@ with open(os.path.join('cdhidef', '__init__.py')) as ver_file:
             version=re.sub("'", "", line[line.index("'"):])
 
 requirements = [
-    'argparse'
+    'argparse',
+    'cdapsutil',
+    'ndex2>=3.7.0,<4.0.0'
 ]
 
 test_requirements = [
@@ -49,12 +51,10 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     scripts=['cdhidef/cdhidefcmd.py'],
     test_suite='tests',

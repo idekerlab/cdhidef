@@ -7,7 +7,12 @@ import traceback
 import subprocess
 import uuid
 import csv
+import json
 import shutil
+
+from ndex2.cx2 import CX2Network
+from ndex2.cx2 import RawCX2NetworkFactory
+
 
 DEFAULT_ERR_MSG = ('Did not get any clusters from HiDeF. Not sure'
                    ' what is going on\n')
@@ -38,7 +43,8 @@ def _parse_arguments(desc, args):
     parser = argparse.ArgumentParser(description=desc,
                                      formatter_class=Formatter)
     parser.add_argument('input',
-                        help='Can be Edge file in tab delimited format or '
+                        help='Can be Edge file in tab delimited format OR'
+                             'a CX2 file OR '
                              'if --convertresult is also set '
                              'this can be full path to xxx.nodes or '
                              'xxx.edges file '
@@ -284,6 +290,64 @@ def write_persistence_node_attribute(out_stream, persistence_map):
     out_stream.write(']}}')
 
 
+def is_file_cx2(input_path):
+    """
+    Opens file specified by **input_path** and determines if it
+    is a CX2 file by doing a pretty crude check looking for a ``[``
+    character in a line. If found we say it is CX2 otherwise it is not
+
+    :param input_path:
+    :type input_path: str
+    :return: ``True`` if its a CX2 file otherwise ``False``
+    :rtype: bool
+    """
+    with open(input_path) as f:
+        for line in f:
+            if len(line.rstrip()) == 0:
+                continue
+            if '[' in line:
+                return True
+            break
+    return False
+
+
+def get_cx2_network(input_path):
+    """
+    Loads CX2Network
+
+    :param input_path: Path to CX2 file
+    :type input_path: str
+    :return: Network
+    :rtype: :py:class:`~ndex2.cx2.CX2Network`
+    """
+    factory = RawCX2NetworkFactory()
+    with open(input_path, 'r') as f:
+        return factory.get_cx2network(json.load(f))
+
+
+def create_edgelist_from_cx2_network(net_cx2, edgelist_path):
+    """
+    Given CX2Network, create tab delimited edgelist file
+    :param net_cx2: Network to create edgelist from
+    :type net_cx2: :py:class:`~ndex2.cx2.CX2Network`
+    """
+    with open(edgelist_path, 'w') as f:
+        for edge_id, edge_obj in net_cx2.get_edges().items():
+            f.write(str(edge_obj['s']) + '\t' + str(edge_obj['t']) + '\n')
+
+
+def convert_hidef_output_to_hcx(out_stream, tempdir, prefix=X_PREFIX):
+    """
+    First converts hidef output to cdaps format
+
+    :param out_stream:
+    :param tempdir:
+    :param prefix:
+    :return:
+    """
+    pass
+
+
 def convert_hidef_output_to_cdaps(out_stream, tempdir, prefix=X_PREFIX,
                                   include_mapping=False):
     """
@@ -393,14 +457,24 @@ def run_hidef(theargs, out_stream=sys.stdout,
         out_stream.flush()
         return 0
 
-    cmdargs = []
-    cmdargs.extend([theargs.hidefcmd, '--g', theargs.input,
-                    '--skipgml'])
-    cmdargs.extend(build_optional_arguments(theargs))
-
-    csv.field_size_limit(theargs.csvmaxfieldsize)
     tmpdir = create_tmpdir(theargs)
     try:
+        input_file = theargs.input
+
+        input_is_cx2 = is_file_cx2(input_file)
+
+        if input_is_cx2 is True:
+            # TODO: need to create edge list from CX2 and write
+            #       to tempdir and set to input_file
+            input_file = 'some new tmp file'
+
+        cmdargs = []
+        cmdargs.extend([theargs.hidefcmd, '--g', input_file,
+                        '--skipgml'])
+        cmdargs.extend(build_optional_arguments(theargs))
+
+        csv.field_size_limit(theargs.csvmaxfieldsize)
+
         outval = os.path.join(tmpdir, X_PREFIX)
         cmdargs.extend(['--o', outval])
         err_stream.write('Running ' + str(' '.join(cmdargs)) + '\n')
@@ -419,7 +493,16 @@ def run_hidef(theargs, out_stream=sys.stdout,
             err_stream.write('Error output from cmd: ' + str(cmderr) + '\n')
 
         try:
-            convert_hidef_output_to_cdaps(out_stream, tmpdir)
+            if input_is_cx2 is True:
+                pass
+                # TODO:
+                #      write hidef output to a file
+                #      use cdapsutil to convert to CX hierarchy
+                #      that we then convert to HCX
+                #      it is very inefficient, but we can fix it
+                #      later
+            else:
+                convert_hidef_output_to_cdaps(out_stream, tmpdir)
         except FileNotFoundError as fe:
             err_stream.write('No output from hidef: ' + str(fe) + '\n')
             return 5
@@ -439,7 +522,9 @@ def main(args):
     """
     desc = """
     Runs HiDeF on command line, sending output to standard
-    out in new 
+    out in COMMUNITYDETECTRESULTV2 format UNLESS CX2 file
+    is fed as input which will cause the result to be output
+    in HCX format
     """
     theargs = _parse_arguments(desc, args[1:])
     try:

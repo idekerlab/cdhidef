@@ -18,6 +18,7 @@ import stat
 import json
 from unittest.mock import MagicMock
 from cdhidef import cdhidefcmd
+from ndex2.cx2 import CX2Network
 
 
 def write_fake_hidef(fakecmd, stdout, stderr, srcdatadir,
@@ -435,6 +436,120 @@ class TestCdhidef(unittest.TestCase):
         finally:
             shutil.rmtree(temp_dir)
 
+    def test_is_file_cx2_when_given_edgelist(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            input_file = os.path.join(temp_dir, 'test_input')
+            shutil.copy(os.path.join(TestCdhidef.HUNDRED_NODE_DIR,
+                                     'input.txt'), input_file)
+            self.assertFalse(cdhidefcmd.is_file_cx2(input_file))
+        finally:
+            shutil.rmtree(temp_dir)
 
-if __name__ == '__main__':
-    sys.exit(unittest.main())
+    def test_is_file_cx2_when_given_cx2_with_empty_lines(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            input_file = os.path.join(temp_dir, 'test_input.cx2')
+            with open(input_file, 'w') as f:
+                f.write(' \n\n\t\n[{"CXVersion": "2.0", "hasFragments": false},'
+                        '{"metaData": [{"elementCount": 1, '
+                        '"name": "attributeDeclarations"}, '
+                        '{"elementCount": 3, "name": "nodes"}, '
+                        '{"elementCount": 1, "name": "edges"}]}, '
+                        '{"attributeDeclarations": '
+                        '[{"nodes": {"size": {"d": "integer"}}, '
+                        '"edges": {"weight": {"d": "double"}}}]}, '
+                        '{"nodes": [{"id": 1, "v": {"size": 5}}, '
+                        '{"id": 2, "v": {"size": 6}}, {"id": 3, "v": {"size": 7}}]}, '
+                        '{"edges": [{"id": 0, "s": 2, "t": 3, "v": {"weight": 0.9}}]}, '
+                        '{"status": [{"error": "", "success": true}]}]')
+
+            self.assertTrue(cdhidefcmd.is_file_cx2(input_file))
+        finally:
+            shutil.rmtree(temp_dir)
+
+    def test_is_file_cx2_when_given_valid_cx2(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            input_file = os.path.join(temp_dir, 'test_input.cx2')
+            with open(input_file, 'w') as f:
+                f.write('[{"CXVersion": "2.0", "hasFragments": false},'
+                        '{"metaData": [{"elementCount": 1, '
+                        '"name": "attributeDeclarations"}, '
+                        '{"elementCount": 3, "name": "nodes"}, '
+                        '{"elementCount": 1, "name": "edges"}]}, '
+                        '{"attributeDeclarations": '
+                        '[{"nodes": {"size": {"d": "integer"}}, '
+                        '"edges": {"weight": {"d": "double"}}}]}, '
+                        '{"nodes": [{"id": 1, "v": {"size": 5}}, '
+                        '{"id": 2, "v": {"size": 6}}, {"id": 3, "v": {"size": 7}}]}, '
+                        '{"edges": [{"id": 0, "s": 2, "t": 3, "v": {"weight": 0.9}}]}, '
+                        '{"status": [{"error": "", "success": true}]}]')
+
+            self.assertTrue(cdhidefcmd.is_file_cx2(input_file))
+        finally:
+            shutil.rmtree(temp_dir)
+
+    def test_get_cx2_network(self):
+        net_cx = cdhidefcmd.get_cx2_network(os.path.join(TestCdhidef.HUNDRED_NODE_DIR,
+                                                         'input.cx2'))
+        self.assertEqual('103node example', net_cx.get_name())
+        self.assertEqual(103, len(net_cx.get_nodes()))
+
+    def test_create_edgelist_from_cx2_network(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            net_cx = cdhidefcmd.get_cx2_network(os.path.join(TestCdhidef.HUNDRED_NODE_DIR,
+                                                             'input.cx2'))
+
+            edge_tuple_set = set()
+            for edge_id, edge_obj in net_cx.get_edges().items():
+                print(edge_obj)
+                edge_tuple_set.add((edge_obj['s'], edge_obj['t']))
+            print(edge_tuple_set)
+
+            edgelist = os.path.join(temp_dir, 'edgelist.txt')
+            cdhidefcmd.create_edgelist_from_cx2_network(net_cx, edgelist)
+
+            with open(edgelist, 'r') as f:
+                for line in f:
+                    row = line.rstrip().split('\t')
+                    self.assertTrue((row[0], row[1]) in edge_tuple_set, row)
+
+                print('xxxxxxxxxxx\n\n\n\n\n\n')
+                print(f.read())
+                print('\n\n\n\n\n')
+        finally:
+            shutil.rmtree(temp_dir)
+
+
+    """
+    # keeping around cause it is nice to have
+    def _create_100node_cx2(self):
+        with open(os.path.join(TestCdhidef.HUNDRED_NODE_DIR,
+                                     'input.txt'), 'r') as f:
+            net_cx = CX2Network()
+            net_attrs = net_cx.get_network_attributes()
+            net_attrs['name'] = '103node example'
+            net_attrs['description'] = '103node example CX2 network'
+            node_set = set()
+            for line in f:
+                row = line.split('\t')
+                src_node_id = int(row[0])
+                target_node_id = int(row[1])
+                if src_node_id not in node_set:
+                    net_cx.add_node(node_id=src_node_id,
+                                    attributes={'name': 'Node ' +
+                                                        str(src_node_id)})
+                    node_set.add(src_node_id)
+                if target_node_id not in node_set:
+                    net_cx.add_node(node_id=target_node_id,
+                                    attributes={'name': 'Node ' +
+                                                        str(target_node_id)})
+                    node_set.add(target_node_id)
+                net_cx.add_edge(source=src_node_id, target=target_node_id,
+                                attributes={'interaction': 'interacts'})
+        with open(os.path.join(TestCdhidef.HUNDRED_NODE_DIR,
+                               'input.cx2'), 'w') as f:
+            json.dump(net_cx.to_cx2(), f, indent=2)
+    """
