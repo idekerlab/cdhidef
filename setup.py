@@ -19,7 +19,8 @@ with open(os.path.join('cdhidef', '__init__.py')) as ver_file:
             version=re.sub("'", "", line[line.index("'"):])
 
 requirements = [
-    'argparse'
+    'argparse',
+    'ndex2>=3.7.0,<4.0.0'
 ]
 
 test_requirements = [
