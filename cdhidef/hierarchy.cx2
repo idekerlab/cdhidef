@@ -1,0 +1,743 @@
+[
+    {
+        "CXVersion": "2.0",
+        "hasFragments": false
+    },
+    {
+        "metaData": [
+            {
+                "elementCount": 1,
+                "name": "attributeDeclarations"
+            },
+            {
+                "elementCount": 1,
+                "name": "networkAttributes"
+            },
+            {
+                "elementCount": 8,
+                "name": "nodes"
+            },
+            {
+                "elementCount": 8,
+                "name": "edges"
+            },
+            {
+                "elementCount": 1,
+                "name": "visualProperties"
+            },
+            {
+                "elementCount": 1,
+                "name": "visualEditorProperties"
+            }
+        ]
+    },
+    {
+        "attributeDeclarations": [
+            {
+                "networkAttributes": {
+                    "name": {
+                        "d": "string"
+                    },
+                    "__CD_OriginalNetwork": {
+                        "d": "long"
+                    },
+                    "description": {
+                        "d": "string"
+                    },
+                    "prov:wasDerivedFrom": {
+                        "d": "string"
+                    },
+                    "prov:wasGeneratedBy": {
+                        "d": "string"
+                    },
+                    "ndexSchema": {
+                        "d": "string"
+                    },
+                    "HCX::modelFileCount": {
+                        "d": "integer"
+                    },
+                    "HCX::interactionNetworkName": {
+                        "d": "string"
+                    }
+                },
+                "nodes": {
+                    "name": {
+                        "a": "n",
+                        "d": "string"
+                    },
+                    "represents": {
+                        "a": "r",
+                        "d": "string"
+                    },
+                    "CD_MemberList": {
+                        "d": "string"
+                    },
+                    "CD_MemberList_Size": {
+                        "d": "integer"
+                    },
+                    "CD_MemberList_LogSize": {
+                        "d": "double"
+                    },
+                    "CD_AnnotatedMembers": {
+                        "d": "string"
+                    },
+                    "CD_AnnotatedMembers_Size": {
+                        "d": "integer"
+                    },
+                    "CD_AnnotatedMembers_Overlap": {
+                        "d": "double"
+                    },
+                    "CD_AnnotatedMembers_Pvalue": {
+                        "d": "double"
+                    },
+                    "HiDeF_persistence": {
+                        "d": "integer"
+                    },
+                    "CD_CommunityName": {
+                        "d": "string"
+                    },
+                    "CD_Labeled": {
+                        "d": "boolean"
+                    },
+                    "HCX::isRoot": {
+                        "d": "boolean"
+                    },
+                    "HCX::members": {
+                        "d": "list_of_long"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "networkAttributes": [
+            {
+                "name": "Initial integration run - Ideker Lab CM4AI 0.1 alpha MDA-MB-468 untreated chromatin hierarchy",
+                "__CD_OriginalNetwork": 0,
+                "description": "Ideker Lab CM4AI 0.1 alpha MDA-MB-468 untreated chromatin Initial integration run hierarchy model Cell Map Hierarchy",
+                "prov:wasDerivedFrom": "RO-crate: bf4de1cb-48a6-4102-8f7a-7363421818c3:rocrate::4.hierarchy",
+                "prov:wasGeneratedBy": "cellmaps_generate_hierarchy 0.1.0a13",
+                "ndexSchema": "hierarchy_v0.1",
+                "HCX::modelFileCount": 2,
+                "HCX::interactionNetworkName": "hierarchy_parent.cx2"
+            }
+        ]
+    },
+    {
+        "nodes": [
+            {
+                "id": 0,
+                "v": {
+                    "CD_MemberList": "PPP1CB DNMT1 KMT2A MORF4L1 HDAC1 PPP1CC SMARCA4 PHF6 BAZ1B KMT2C AURKB YWHAE USP7 CBX3 DNMT3B DNMT3A BRD7 EHMT1 ING1 KMT2D CHD4 PARP1 CHD1",
+                    "CD_MemberList_Size": 23,
+                    "CD_MemberList_LogSize": 4.524,
+                    "CD_AnnotatedMembers": "",
+                    "CD_AnnotatedMembers_Size": 0,
+                    "CD_AnnotatedMembers_Overlap": 0.0,
+                    "CD_AnnotatedMembers_Pvalue": 0.0,
+                    "HiDeF_persistence": 104,
+                    "CD_CommunityName": "C23",
+                    "CD_Labeled": true,
+                    "HCX::isRoot": true,
+                    "HCX::members": [
+                        3,
+                        9,
+                        19,
+                        22,
+                        18,
+                        15,
+                        11,
+                        8,
+                        1,
+                        7,
+                        13,
+                        12,
+                        0,
+                        17,
+                        4,
+                        20,
+                        21,
+                        6,
+                        14,
+                        10,
+                        16,
+                        5,
+                        2
+                    ],
+                    "n": "C23",
+                    "r": "C23"
+                }
+            },
+            {
+                "id": 1,
+                "v": {
+                    "CD_MemberList": "BAZ1B HDAC1 EHMT1 KMT2A PPP1CC ING1 USP7 CHD4 SMARCA4 CBX3 DNMT3B",
+                    "CD_MemberList_Size": 11,
+                    "CD_MemberList_LogSize": 3.459,
+                    "CD_AnnotatedMembers": "",
+                    "CD_AnnotatedMembers_Size": 0,
+                    "CD_AnnotatedMembers_Overlap": 0.0,
+                    "CD_AnnotatedMembers_Pvalue": 0.0,
+                    "HiDeF_persistence": 14,
+                    "CD_CommunityName": "C24",
+                    "CD_Labeled": true,
+                    "HCX::isRoot": false,
+                    "HCX::members": [
+                        20,
+                        18,
+                        14,
+                        3,
+                        11,
+                        10,
+                        9,
+                        0,
+                        2,
+                        4,
+                        1
+                    ],
+                    "n": "C24",
+                    "r": "C24"
+                }
+            },
+            {
+                "id": 2,
+                "v": {
+                    "CD_MemberList": "DNMT3A PPP1CB MORF4L1 AURKB YWHAE PARP1 DNMT3B CHD1",
+                    "CD_MemberList_Size": 8,
+                    "CD_MemberList_LogSize": 3.0,
+                    "CD_AnnotatedMembers": "",
+                    "CD_AnnotatedMembers_Size": 0,
+                    "CD_AnnotatedMembers_Overlap": 0.0,
+                    "CD_AnnotatedMembers_Pvalue": 0.0,
+                    "HiDeF_persistence": 22,
+                    "CD_CommunityName": "C25",
+                    "CD_Labeled": true,
+                    "HCX::isRoot": false,
+                    "HCX::members": [
+                        21,
+                        14,
+                        13,
+                        16,
+                        12,
+                        17,
+                        19,
+                        22
+                    ],
+                    "n": "C25",
+                    "r": "C25"
+                }
+            },
+            {
+                "id": 3,
+                "v": {
+                    "CD_MemberList": "DNMT1 HDAC1 PPP1CC CHD4 SMARCA4 PHF6",
+                    "CD_MemberList_Size": 6,
+                    "CD_MemberList_LogSize": 2.585,
+                    "CD_AnnotatedMembers": "",
+                    "CD_AnnotatedMembers_Size": 0,
+                    "CD_AnnotatedMembers_Overlap": 0.0,
+                    "CD_AnnotatedMembers_Pvalue": 0.0,
+                    "HiDeF_persistence": 16,
+                    "CD_CommunityName": "C26",
+                    "CD_Labeled": true,
+                    "HCX::isRoot": false,
+                    "HCX::members": [
+                        20,
+                        6,
+                        5,
+                        11,
+                        0,
+                        1
+                    ],
+                    "n": "C26",
+                    "r": "C26"
+                }
+            },
+            {
+                "id": 4,
+                "v": {
+                    "CD_MemberList": "SMARCA4 PPP1CC CHD4 HDAC1",
+                    "CD_MemberList_Size": 4,
+                    "CD_MemberList_LogSize": 2.0,
+                    "CD_AnnotatedMembers": "",
+                    "CD_AnnotatedMembers_Size": 0,
+                    "CD_AnnotatedMembers_Overlap": 0.0,
+                    "CD_AnnotatedMembers_Pvalue": 0.0,
+                    "HiDeF_persistence": 20,
+                    "CD_CommunityName": "C27",
+                    "CD_Labeled": true,
+                    "HCX::isRoot": false,
+                    "HCX::members": [
+                        20,
+                        0,
+                        11,
+                        1
+                    ],
+                    "n": "C27",
+                    "r": "C27"
+                }
+            },
+            {
+                "id": 5,
+                "v": {
+                    "CD_MemberList": "BAZ1B CBX3 DNMT3B EHMT1",
+                    "CD_MemberList_Size": 4,
+                    "CD_MemberList_LogSize": 2.0,
+                    "CD_AnnotatedMembers": "",
+                    "CD_AnnotatedMembers_Size": 0,
+                    "CD_AnnotatedMembers_Overlap": 0.0,
+                    "CD_AnnotatedMembers_Pvalue": 0.0,
+                    "HiDeF_persistence": 26,
+                    "CD_CommunityName": "C30",
+                    "CD_Labeled": true,
+                    "HCX::isRoot": false,
+                    "HCX::members": [
+                        18,
+                        9,
+                        4,
+                        14
+                    ],
+                    "n": "C30",
+                    "r": "C30"
+                }
+            },
+            {
+                "id": 6,
+                "v": {
+                    "CD_MemberList": "AURKB DNMT3B DNMT3A MORF4L1",
+                    "CD_MemberList_Size": 4,
+                    "CD_MemberList_LogSize": 2.0,
+                    "CD_AnnotatedMembers": "",
+                    "CD_AnnotatedMembers_Size": 0,
+                    "CD_AnnotatedMembers_Overlap": 0.0,
+                    "CD_AnnotatedMembers_Pvalue": 0.0,
+                    "HiDeF_persistence": 13,
+                    "CD_CommunityName": "C28",
+                    "CD_Labeled": true,
+                    "HCX::isRoot": false,
+                    "HCX::members": [
+                        16,
+                        19,
+                        14,
+                        22
+                    ],
+                    "n": "C28",
+                    "r": "C28"
+                }
+            },
+            {
+                "id": 7,
+                "v": {
+                    "CD_MemberList": "PARP1 PPP1CB YWHAE CHD1",
+                    "CD_MemberList_Size": 4,
+                    "CD_MemberList_LogSize": 2.0,
+                    "CD_AnnotatedMembers": "",
+                    "CD_AnnotatedMembers_Size": 0,
+                    "CD_AnnotatedMembers_Overlap": 0.0,
+                    "CD_AnnotatedMembers_Pvalue": 0.0,
+                    "HiDeF_persistence": 47,
+                    "CD_CommunityName": "C29",
+                    "CD_Labeled": true,
+                    "HCX::isRoot": false,
+                    "HCX::members": [
+                        21,
+                        17,
+                        12,
+                        13
+                    ],
+                    "n": "C29",
+                    "r": "C29"
+                }
+            }
+        ]
+    },
+    {
+        "edges": [
+            {
+                "id": 0,
+                "s": 0,
+                "t": 1
+            },
+            {
+                "id": 1,
+                "s": 0,
+                "t": 2
+            },
+            {
+                "id": 2,
+                "s": 0,
+                "t": 3
+            },
+            {
+                "id": 3,
+                "s": 1,
+                "t": 4
+            },
+            {
+                "id": 4,
+                "s": 1,
+                "t": 5
+            },
+            {
+                "id": 5,
+                "s": 2,
+                "t": 6
+            },
+            {
+                "id": 6,
+                "s": 2,
+                "t": 7
+            },
+            {
+                "id": 7,
+                "s": 3,
+                "t": 4
+            }
+        ]
+    },
+    {
+        "visualProperties": [
+            {
+                "default": {
+                    "edge": {
+                        "EDGE_CURVED": true,
+                        "EDGE_LABEL_COLOR": "#000000",
+                        "EDGE_LABEL_FONT_FACE": {
+                            "FONT_FAMILY": "sans-serif",
+                            "FONT_NAME": "Dialog",
+                            "FONT_STYLE": "normal",
+                            "FONT_WEIGHT": "normal"
+                        },
+                        "EDGE_LABEL_FONT_SIZE": 10,
+                        "EDGE_LABEL_MAX_WIDTH": 200,
+                        "EDGE_LABEL_OPACITY": 1,
+                        "EDGE_LINE_COLOR": "#999999",
+                        "EDGE_LINE_STYLE": "solid",
+                        "EDGE_OPACITY": 0.666666666666667,
+                        "EDGE_SELECTED": "false",
+                        "EDGE_SELECTED_PAINT": "#FF0000",
+                        "EDGE_SOURCE_ARROW_COLOR": "#999999",
+                        "EDGE_SOURCE_ARROW_SHAPE": "triangle",
+                        "EDGE_SOURCE_ARROW_SIZE": 6,
+                        "EDGE_TARGET_ARROW_COLOR": "#999999",
+                        "EDGE_TARGET_ARROW_SHAPE": "none",
+                        "EDGE_TARGET_ARROW_SIZE": 4,
+                        "EDGE_VISIBILITY": "element",
+                        "EDGE_WIDTH": 2
+                    },
+                    "network": {
+                        "NETWORK_BACKGROUND_COLOR": "#FFFFFF"
+                    },
+                    "node": {
+                        "COMPOUND_NODE_PADDING": "30.0",
+                        "COMPOUND_NODE_SHAPE": "ROUND_RECTANGLE",
+                        "NODE_BACKGROUND_COLOR": "#CCCCCC",
+                        "NODE_BACKGROUND_OPACITY": 1,
+                        "NODE_BORDER_COLOR": "#333333",
+                        "NODE_BORDER_OPACITY": 1,
+                        "NODE_BORDER_STYLE": "solid",
+                        "NODE_BORDER_WIDTH": 1,
+                        "NODE_HEIGHT": 10,
+                        "NODE_IMAGE_1_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_1_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_IMAGE_2_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_2_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_IMAGE_3_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_3_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_IMAGE_4_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_4_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_IMAGE_5_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_5_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_IMAGE_6_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_6_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_IMAGE_7_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_7_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_IMAGE_8_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_8_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_IMAGE_9_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 0,
+                            "VERTICAL_ALIGN": "center",
+                            "VERTICAL_ANCHOR": "center"
+                        },
+                        "NODE_IMAGE_9_SIZE": {
+                            "HEIGHT": 0,
+                            "WIDTH": 0
+                        },
+                        "NODE_LABEL_COLOR": "#000000",
+                        "NODE_LABEL_FONT_FACE": {
+                            "FONT_FAMILY": "sans-serif",
+                            "FONT_NAME": "Dialog",
+                            "FONT_STYLE": "normal",
+                            "FONT_WEIGHT": "normal"
+                        },
+                        "NODE_LABEL_FONT_SIZE": 12,
+                        "NODE_LABEL_MAX_WIDTH": 200,
+                        "NODE_LABEL_OPACITY": 0,
+                        "NODE_LABEL_POSITION": {
+                            "HORIZONTAL_ALIGN": "center",
+                            "HORIZONTAL_ANCHOR": "center",
+                            "JUSTIFICATION": "center",
+                            "MARGIN_X": 0,
+                            "MARGIN_Y": 5,
+                            "VERTICAL_ALIGN": "top",
+                            "VERTICAL_ANCHOR": "bottom"
+                        },
+                        "NODE_SELECTED": false,
+                        "NODE_SELECTED_PAINT": "#FFFF00",
+                        "NODE_SHAPE": "ellipse",
+                        "NODE_VISIBILITY": "element",
+                        "NODE_WIDTH": 10,
+                        "NODE_X_LOCATION": 0,
+                        "NODE_Y_LOCATION": 0,
+                        "NODE_Z_LOCATION": 0
+                    }
+                },
+                "edgeMapping": {},
+                "nodeMapping": {
+                    "NODE_BACKGROUND_COLOR": {
+                        "definition": {
+                            "attribute": "CD_AnnotatedMembers_Overlap",
+                            "map": [
+                                {
+                                    "includeMax": true,
+                                    "includeMin": false,
+                                    "max": 0,
+                                    "maxVPValue": "#FFFFFF"
+                                },
+                                {
+                                    "includeMax": true,
+                                    "includeMin": true,
+                                    "max": 1,
+                                    "maxVPValue": "#FF3333",
+                                    "min": 0,
+                                    "minVPValue": "#FFFFFF"
+                                },
+                                {
+                                    "includeMax": false,
+                                    "includeMin": false,
+                                    "min": 1,
+                                    "minVPValue": "#FF0000"
+                                }
+                            ],
+                            "type": "double"
+                        },
+                        "type": "CONTINUOUS"
+                    },
+                    "NODE_HEIGHT": {
+                        "definition": {
+                            "attribute": "CD_MemberList_LogSize",
+                            "map": [
+                                {
+                                    "includeMax": false,
+                                    "includeMin": false,
+                                    "max": 0,
+                                    "maxVPValue": 1
+                                },
+                                {
+                                    "includeMax": true,
+                                    "includeMin": true,
+                                    "max": 13.4200918046023,
+                                    "maxVPValue": 101.930772669175,
+                                    "min": 0,
+                                    "minVPValue": 10.0840336134454
+                                },
+                                {
+                                    "includeMax": false,
+                                    "includeMin": false,
+                                    "min": 13.4200918046023,
+                                    "minVPValue": 1
+                                }
+                            ],
+                            "type": "double"
+                        },
+                        "type": "CONTINUOUS"
+                    },
+                    "NODE_LABEL": {
+                        "definition": {
+                            "attribute": "name",
+                            "type": "string"
+                        },
+                        "type": "PASSTHROUGH"
+                    },
+                    "NODE_LABEL_FONT_SIZE": {
+                        "definition": {
+                            "attribute": "CD_MemberList_LogSize",
+                            "map": [
+                                {
+                                    "includeMax": false,
+                                    "includeMin": false,
+                                    "max": 0,
+                                    "maxVPValue": 1
+                                },
+                                {
+                                    "includeMax": true,
+                                    "includeMin": true,
+                                    "max": 13.4200918046023,
+                                    "maxVPValue": 21,
+                                    "min": 0,
+                                    "minVPValue": 10
+                                },
+                                {
+                                    "includeMax": false,
+                                    "includeMin": false,
+                                    "min": 13.4200918046023,
+                                    "minVPValue": 1
+                                }
+                            ],
+                            "type": "double"
+                        },
+                        "type": "CONTINUOUS"
+                    },
+                    "NODE_LABEL_OPACITY": {
+                        "definition": {
+                            "attribute": "CD_Labeled",
+                            "map": [
+                                {
+                                    "v": false,
+                                    "vp": 0
+                                },
+                                {
+                                    "v": true,
+                                    "vp": 1
+                                }
+                            ],
+                            "type": "boolean"
+                        },
+                        "type": "DISCRETE"
+                    },
+                    "NODE_WIDTH": {
+                        "definition": {
+                            "attribute": "CD_MemberList_LogSize",
+                            "map": [
+                                {
+                                    "includeMax": false,
+                                    "includeMin": false,
+                                    "max": 0,
+                                    "maxVPValue": 1
+                                },
+                                {
+                                    "includeMax": true,
+                                    "includeMin": true,
+                                    "max": 13.4200918046023,
+                                    "maxVPValue": 101.930772669175,
+                                    "min": 0,
+                                    "minVPValue": 10.0840336134454
+                                },
+                                {
+                                    "includeMax": false,
+                                    "includeMin": false,
+                                    "min": 13.4200918046023,
+                                    "minVPValue": 1
+                                }
+                            ],
+                            "type": "double"
+                        },
+                        "type": "CONTINUOUS"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "visualEditorProperties": [
+            {
+                "properties": {
+                    "arrowColorMatchesEdge": true,
+                    "nodeCustomGraphicsSizeSync": true,
+                    "nodeSizeLocked": true
+                }
+            }
+        ]
+    },
+    {
+        "status": [
+            {
+                "error": "",
+                "success": true
+            }
+        ]
+    }
+]

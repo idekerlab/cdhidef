@@ -39,6 +39,7 @@ setup(
     ],
     package_dir={'cdhidef':
                  'cdhidef'},
+    package_data={'cdhidef': ['hierarchy.cx2']},
     include_package_data=True,
     install_requires=requirements,
     license="BSD license",

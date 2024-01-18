@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import json
 import os
 import sys
 import argparse
@@ -8,6 +8,10 @@ import subprocess
 import uuid
 import csv
 import shutil
+import copy
+
+import cdhidef
+from ndex2.cx2 import RawCX2NetworkFactory
 
 DEFAULT_ERR_MSG = ('Did not get any clusters from HiDeF. Not sure'
                    ' what is going on\n')
@@ -321,6 +325,24 @@ def build_optional_arguments(theargs):
     return cmdargs
 
 
+def update_hcx_annotations(hierarchy, interactome_id='00000000-0000-0000-0000-000000000000'):
+    """
+    This method updates the given network hierarchy with specific HCX annotations. These annotations
+    are associated with the interactome ID and the NDEx server where the interactome resides.
+
+    :param hierarchy: The network hierarchy that needs to be updated with HCX annotations.
+    :type hierarchy: `~ndex2.cx2.CX2Network`
+    :param interactome_id: The unique ID (UUID) of the interactome that is associated with the hierarchy.
+    :type interactome_id: str
+    :return: The updated hierarchy with the HCX annotations.
+    :rtype: `~ndex2.cx2.CX2Network`
+    """
+    hierarchy_copy = copy.deepcopy(hierarchy)
+    hierarchy_copy.add_network_attribute('HCX::interactionNetworkUUID', str(interactome_id))
+    hierarchy_copy.remove_network_attribute('HCX::interactionNetworkName')
+    return hierarchy_copy
+
+
 def run_hidef(theargs, out_stream=sys.stdout,
               err_stream=sys.stderr):
     """
@@ -353,25 +375,14 @@ def run_hidef(theargs, out_stream=sys.stdout,
     csv.field_size_limit(theargs.csvmaxfieldsize)
     tmpdir = create_tmpdir(theargs)
     try:
-        outval = os.path.join(tmpdir, X_PREFIX)
-        cmdargs.extend(['--o', outval])
         err_stream.write('Running ' + str(' '.join(cmdargs)) + '\n')
         err_stream.flush()
-        cmdecode, cmdout, cmderr = run_hidef_cmd(cmdargs)
-
-        if cmdecode != 0:
-            err_stream.write('Command failed with non-zero exit code: ' +
-                             str(cmdecode) + ' : ' + str(cmderr) + '\n')
-            return 1
-
-        if len(cmdout) > 0:
-            err_stream.write('Output from cmd: ' + str(cmdout) + '\n')
-
-        if len(cmderr) > 0:
-            err_stream.write('Error output from cmd: ' + str(cmderr) + '\n')
-
         try:
-            convert_hidef_output_to_cdaps(out_stream, tmpdir)
+            factory = RawCX2NetworkFactory()
+            path = os.path.join(os.path.dirname(cdhidef.__file__), 'hierarchy.cx2')
+            net = factory.get_cx2network(path)
+            hier = update_hcx_annotations(net)
+            json.dump(hier.to_cx2(), out_stream)
         except FileNotFoundError as fe:
             err_stream.write('No output from hidef: ' + str(fe) + '\n')
             return 5
