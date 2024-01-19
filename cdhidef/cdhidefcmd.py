@@ -382,7 +382,11 @@ def run_hidef(theargs, out_stream=sys.stdout,
             path = os.path.join(os.path.dirname(cdhidef.__file__), 'hierarchy.cx2')
             net = factory.get_cx2network(path)
             hier = update_hcx_annotations(net)
+
+            # added [] because we need to put the CX2 network in a list
+            out_stream.write('[')
             json.dump(hier.to_cx2(), out_stream)
+            out_stream.write(']')
         except FileNotFoundError as fe:
             err_stream.write('No output from hidef: ' + str(fe) + '\n')
             return 5
