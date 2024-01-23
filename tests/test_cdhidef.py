@@ -504,9 +504,7 @@ class TestCdhidef(unittest.TestCase):
 
             edge_tuple_set = set()
             for edge_id, edge_obj in net_cx.get_edges().items():
-                print(edge_obj)
                 edge_tuple_set.add((edge_obj['s'], edge_obj['t']))
-            print(edge_tuple_set)
 
             edgelist = os.path.join(temp_dir, 'edgelist.txt')
             cdhidefcmd.create_edgelist_from_cx2_network(net_cx, edgelist)
@@ -515,10 +513,6 @@ class TestCdhidef(unittest.TestCase):
                 for line in f:
                     row = line.rstrip().split('\t')
                     self.assertTrue((int(row[0]), int(row[1])) in edge_tuple_set, row)
-
-                print('xxxxxxxxxxx\n\n\n\n\n\n')
-                print(f.read())
-                print('\n\n\n\n\n')
         finally:
             shutil.rmtree(temp_dir)
 
