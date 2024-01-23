@@ -514,7 +514,7 @@ class TestCdhidef(unittest.TestCase):
             with open(edgelist, 'r') as f:
                 for line in f:
                     row = line.rstrip().split('\t')
-                    self.assertTrue((row[0], row[1]) in edge_tuple_set, row)
+                    self.assertTrue((int(row[0]), int(row[1])) in edge_tuple_set, row)
 
                 print('xxxxxxxxxxx\n\n\n\n\n\n')
                 print(f.read())
