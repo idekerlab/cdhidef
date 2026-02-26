@@ -28,6 +28,29 @@ class Formatter(argparse.ArgumentDefaultsHelpFormatter,
     pass
 
 
+def _iter_node_ids(node_id_str):
+    """
+    Yields node ID strings from a space-delimited string one at a
+    time without creating a full list in memory. This avoids the
+    OOM issue where ``str.split(' ')`` allocates a list of all
+    node IDs at once.
+
+    :param node_id_str: space-delimited node IDs
+    :type node_id_str: str
+    :return: iterator of node ID strings
+    :rtype: generator
+    """
+    start = 0
+    length = len(node_id_str)
+    while start < length:
+        end = node_id_str.find(' ', start)
+        if end == -1:
+            yield node_id_str[start:]
+            break
+        yield node_id_str[start:end]
+        start = end + 1
+
+
 def _parse_arguments(desc, args):
     """
     Parses command line arguments
@@ -125,12 +148,9 @@ def get_max_node_id(nodes_file):
     with open(nodes_file, 'r') as csvfile:
         linereader = csv.reader(csvfile, delimiter='\t')
         for row in linereader:
-            for node in row[2].split(' '):
-                if maxval is None:
-                    maxval = int(node)
-                    continue
+            for node in _iter_node_ids(row[2]):
                 curval = int(node)
-                if curval > maxval:
+                if maxval is None or curval > maxval:
                     maxval = curval
     return maxval
 
@@ -155,49 +175,45 @@ def write_members_for_row(out_stream, row, cur_node_id):
     :type cur_node_id: int
     :return: None
     """
-    for node in row[2].split(' '):
-        out_stream.write(str(cur_node_id) + ',' +
-                         node + ',c-m;')
+    cur_node_str = str(cur_node_id)
+    for node in _iter_node_ids(row[2]):
+        out_stream.write(cur_node_str)
+        out_stream.write(',')
+        out_stream.write(node)
+        out_stream.write(',c-m;')
 
 
-def update_cluster_node_map(cluster_node_map, cluster, max_node_id):
+def update_cluster_node_map(cluster_node_map, cluster, max_node_id,
+                            persistence_val):
     """
     Updates 'cluster_node_map' which is in format of
 
-    <cluster name> => <node id>
+    <cluster name> => (<node id>, <persistence value>)
 
     by adding 'cluster' to 'cluster_node_map' if it does not
-    exist
+    exist. Stores the persistence value alongside the node id
+    to avoid needing a separate persistence dictionary.
 
-    :param cluster_node_map: map of cluster names to node ids
+    :param cluster_node_map: map of cluster names to
+                             (node_id, persistence_val) tuples
     :type cluster_node_map: dict
     :param cluster: name of cluster
     :type cluster: str
     :param max_node_id: current max node id
     :type max_node_id: int
+    :param persistence_val: persistence value for this cluster
+    :type persistence_val: str
     :return: (new 'max_node_id' if 'cluster' was added otherwise 'max_node_id',
               id corresponding to 'cluster' found in 'cluster_node_map')
     :rtype: tuple
     """
     if cluster not in cluster_node_map:
         max_node_id += 1
-        cluster_node_map[cluster] = max_node_id
+        cluster_node_map[cluster] = (max_node_id, persistence_val)
         cur_node_id = max_node_id
     else:
-        cur_node_id = cluster_node_map[cluster]
+        cur_node_id = cluster_node_map[cluster][0]
     return max_node_id, cur_node_id
-
-
-def update_persistence_map(persistence_node_map, node_id, persistence_val):
-    """
-
-    :param persistence_node_map:
-    :param node_id:
-    :param persistence_val:
-    :return:
-    """
-    if node_id not in persistence_node_map:
-        persistence_node_map[node_id] = persistence_val
 
 
 def write_communities(out_stream, edge_file, cluster_node_map):
@@ -228,31 +244,46 @@ def write_communities(out_stream, edge_file, cluster_node_map):
     with open(edge_file, 'r') as csvfile:
         linereader = csv.reader(csvfile, delimiter='\t')
         for row in linereader:
-            out_stream.write(str(cluster_node_map[row[0]]) + ',' +
-                             str(cluster_node_map[row[1]]) + ',c-c;')
+            out_stream.write(str(cluster_node_map[row[0]][0]))
+            out_stream.write(',')
+            out_stream.write(str(cluster_node_map[row[1]][0]))
+            out_stream.write(',c-c;')
     out_stream.write('",')
 
 
-def write_persistence_node_attribute(out_stream, persistence_map):
+def write_persistence_node_attribute(out_stream, cluster_node_map):
     """
+    Writes persistence node attributes from the cluster_node_map
+    which stores (node_id, persistence_val) tuples as values.
 
-    :param out_stream:
-    :param persistence_map:
-    :return:
+    :param out_stream: output stream
+    :type out_stream: file like object
+    :param cluster_node_map: map of cluster names to
+                             (node_id, persistence_val) tuples
+    :type cluster_node_map: dict
+    :return: None
     """
-    out_stream.write('"' + NODE_CX_KEY_NAME + '": {')
-    out_stream.write('"' + ATTR_DEC_NAME + '": [{')
-    out_stream.write('"nodes": { "' + PERSISTENCE_COL_NAME +
-                     '": { "d": "integer", "a": "p1", "v": 0}}}],')
+    out_stream.write('"')
+    out_stream.write(NODE_CX_KEY_NAME)
+    out_stream.write('": {')
+    out_stream.write('"')
+    out_stream.write(ATTR_DEC_NAME)
+    out_stream.write('": [{"nodes": { "')
+    out_stream.write(PERSISTENCE_COL_NAME)
+    out_stream.write('": { "d": "integer", "a": "p1", "v": 0}}}],')
     out_stream.write('"nodes": [')
     is_first = True
-    for key in persistence_map:
+    for node_id, persistence_val in cluster_node_map.values():
         if is_first is False:
             out_stream.write(',')
         else:
             is_first = False
-        out_stream.write('{"id": ' + str(key) + ',')
-        out_stream.write('"v": { "p1": ' + str(persistence_map[key]) + '}}')
+        out_stream.write('{"id": ')
+        out_stream.write(str(node_id))
+        out_stream.write(',')
+        out_stream.write('"v": { "p1": ')
+        out_stream.write(str(persistence_val))
+        out_stream.write('}}')
 
     out_stream.write(']}}')
 
@@ -282,20 +313,19 @@ def convert_hidef_output_to_cdaps(out_stream, tempdir):
     nodefile = os.path.join(tempdir, X_PREFIX + '.nodes')
     max_node_id = get_max_node_id(nodefile)
     cluster_node_map = {}
-    persistence_map = {}
     out_stream.write('{"communityDetectionResult": "')
     with open(nodefile, 'r') as csvfile:
         linereader = csv.reader(csvfile, delimiter='\t')
         for row in linereader:
             max_node_id, cur_node_id = update_cluster_node_map(cluster_node_map,
                                                                row[0],
-                                                               max_node_id)
-            update_persistence_map(persistence_map, cur_node_id, row[-1])
+                                                               max_node_id,
+                                                               row[-1])
             write_members_for_row(out_stream, row,
                                   cur_node_id)
     edge_file = os.path.join(tempdir, X_PREFIX + '.edges')
     write_communities(out_stream, edge_file, cluster_node_map)
-    write_persistence_node_attribute(out_stream, persistence_map)
+    write_persistence_node_attribute(out_stream, cluster_node_map)
     out_stream.write('\n')
     return None
 
